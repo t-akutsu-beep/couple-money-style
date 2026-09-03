@@ -4,6 +4,13 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>COUPLE MONEY STYLE｜ふたりの未来と、お金のこと。</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-36H09G4151"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-36H09G4151");
+</script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Shippori+Mincho:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <style>
@@ -1392,6 +1399,12 @@ body{
       let currentQuestion = 0;
       let answers = [];
 
+      function trackEvent(eventName, parameters = {}) {
+        if (typeof window.gtag === "function") {
+          window.gtag("event", eventName, parameters);
+        }
+      }
+
       function updateProgress() {
         dots.forEach((dot, index) => {
           dot.classList.toggle("active", index === currentQuestion);
@@ -1427,10 +1440,17 @@ body{
         dots.forEach(dot => dot.classList.add("active"));
         retryButton.classList.add("visible", `theme-${resultName}`);
         lifeSupportButton.classList.add("visible");
+        trackEvent("quiz_complete", { result_type: resultName });
+        trackEvent(`quiz_result_${resultName}`);
       }
 
       startButton.addEventListener("click", () => {
+        trackEvent("quiz_start");
         showQuestion(0);
+      });
+
+      lifeSupportButton.addEventListener("click", () => {
+        trackEvent("life_support_click");
       });
 
       document.querySelectorAll(".answer-button").forEach(button => {
