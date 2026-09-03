@@ -991,17 +991,17 @@ body{
 .question-card .answers{ position:relative; z-index:2; }
 /* Per-frame focal-point adjustments: crop only, no image editing. */
 .photo-start-tr img{ object-position:55% 52%; }
-.photo-start-bl img{ object-position:56% 54%; }
+.photo-start-bl img{ object-position:56% 100%; }
 .photo-q1-tr img{ object-position:55% 48%; }
 .photo-q1-bl img{ object-position:52% 47%; }
 .photo-q2-tr img{ object-position:48% 58%; }
-.photo-q2-bl img{ object-position:58% 48%; }
+.photo-q2-bl img{ object-position:58% 100%; }
 .photo-q3-tr img{ object-position:60% 48%; }
-.photo-q3-bl img{ object-position:48% 52%; }
+.photo-q3-bl img{ object-position:0% 52%; }
 .photo-q4-tr img{ object-position:48% 45%; }
-.photo-q4-bl img{ object-position:46% 58%; }
+.photo-q4-bl img{ object-position:0% 58%; }
 .photo-q5-tr img{ object-position:48% 50%; }
-.photo-q5-bl img{ object-position:52% 55%; }
+.photo-q5-bl img{ object-position:0% 55%; }
 @media(max-width:600px){
   .editorial-photo-frame{padding:5px;border-width:2px;}
   .editorial-photo-frame.top-right{width:104px;height:104px;right:-28px;top:-28px;}
@@ -1093,6 +1093,110 @@ body{
 }
 </style>
 
+<style id="answer-illustration-style">
+  .answer-illustration {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 42px;
+    overflow: visible;
+    opacity: 1 !important;
+  }
+  .answer-illustration::before {
+    display: none;
+  }
+  .answer-illustration::after {
+    display: none;
+  }
+  .answer-illustration svg {
+    position: relative;
+    z-index: 1;
+    width: 36px !important;
+    height: 36px !important;
+    color: #aa927b;
+    stroke-width: 1.25 !important;
+    filter: none;
+  }
+</style>
+
+<style id="soft-corner-photo-adjustment">
+  .editorial-photo-frame {
+    background: rgba(255, 253, 249, .9);
+    border-color: rgba(190, 156, 119, .34);
+  }
+  .editorial-photo-frame img {
+    opacity: .68;
+    filter: brightness(1.12) saturate(.72) contrast(.88);
+  }
+  .editorial-photo-frame.top-right {
+    width: 158px;
+    height: 158px;
+    right: -45px;
+    top: -44px;
+  }
+  .editorial-photo-frame.bottom-left {
+    width: 144px;
+    height: 144px;
+    left: -42px;
+    bottom: -42px;
+  }
+  @media (max-width: 600px) {
+    .editorial-photo-frame.top-right {
+      width: 124px;
+      height: 124px;
+      right: -35px;
+      top: -34px;
+    }
+    .editorial-photo-frame.bottom-left {
+      width: 112px;
+      height: 112px;
+      left: -33px;
+      bottom: -33px;
+    }
+  }
+</style>
+
+<style id="life-support-cta-style">
+  .bottom-area {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .life-support-button {
+    display: none;
+    width: min(100%, 420px);
+    min-height: 58px;
+    margin: 8px auto 0;
+    padding: 14px 24px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 999px;
+    background: #7f9670;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: .04em;
+    text-decoration: none;
+    box-shadow: 0 10px 22px rgba(93, 112, 80, .2);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .life-support-button.visible { display: inline-flex; }
+  .life-support-button:hover {
+    transform: translateY(-2px);
+    background: #718763;
+    box-shadow: 0 13px 26px rgba(93, 112, 80, .26);
+  }
+  .life-support-button:focus-visible {
+    outline: 3px solid rgba(127, 150, 112, .35);
+    outline-offset: 3px;
+  }
+  .life-support-button svg { width: 17px; height: 17px; }
+  .bottom-area .retry-button { margin: 0 auto; }
+</style>
 </head>
 <body data-template-id="__page-root" style="background: rgb(255, 253, 248);">
 <div class="site-shell">
@@ -1248,6 +1352,7 @@ body{
 </section>
 </main>
 <div class="bottom-area">
+<a class="canva-button life-support-button" href="https://www.bridal-produce.co.jp/members/lifesupport/" id="life-support-button" rel="noopener noreferrer" target="_blank"> <span>BPのライフサポートはこちら</span> <i aria-hidden="true" data-lucide="external-link"></i> </a>
 <button class="canva-button retry-button" data-template-id="retry-button" id="retry-button" style="background: rgb(217, 117, 98); color: rgb(255, 255, 255);" type="button"> <i aria-hidden="true" data-lucide="rotate-ccw"></i> <span class="canva-text" data-template-id="retry-button-copy" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">やり直す</span> </button>
 </div>
 <footer>
@@ -1257,12 +1362,31 @@ body{
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const answerIllustrations = {
+        "answer-1a": `<svg viewBox="0 0 48 48"><path class="soft" d="M13 10h23v31H13z"/><path d="M17 10V7h15v3M13 10h23v31H13zM18 18l2 2 4-5M27 18h5M18 27l2 2 4-5M27 27h5M18 36h14"/></svg>`,
+        "answer-1b": `<svg viewBox="0 0 48 48"><path d="M13 15c-7 2-6 11 1 11-6 5 1 12 7 7 1 8 11 7 12 1 7 4 12-5 6-10 4-1 9-8 2-12 3-7-7-10-12-5-5-7-14-2-10 6-7 2-6 11 1 13zM17 20c5-6 13 6 6 9-5 2-8-5-3-8 6-4 14 5 8 11"/><path d="M10 38c7 2 14 2 21 0M36 12l3-3M39 17h4M8 10l-3-3"/></svg>`,
+        "answer-2a": `<svg viewBox="0 0 48 48"><path class="soft" d="M10 23c0-8 7-13 16-13 8 0 14 4 16 10l4 2-3 7c-1 4-4 7-8 9v4h-6v-3H18v3h-6v-7c-3-3-4-7-2-12z"/><path d="M10 23c0-8 7-13 16-13 8 0 14 4 16 10l4 2-3 7c-1 4-4 7-8 9v4h-6v-3H18v3h-6v-7c-3-3-4-7-2-12zM21 16h10M38 22h.1M15 18l-5-4M25 10V6M21 6h8"/><circle cx="25" cy="6" r="4"/></svg>`,
+        "answer-2b": `<svg viewBox="0 0 48 48"><path class="soft" d="M9 14h30v26H9z"/><path d="M9 14h30v26H9zM9 20h30M31 25h12v9H31zM36 29h.1M15 9v8M33 9v8M13 29h10M18 24v10"/></svg>`,
+        "answer-3a": `<svg viewBox="0 0 48 48"><path class="soft" d="M8 36h7V24H8zM20 36h7V18h-7zM32 36h7V11h-7z"/><path d="M7 41h35M8 36h7V24H8zM20 36h7V18h-7zM32 36h7V11h-7zM10 17c5 1 8-1 10-6-5-1-9 1-10 6zM14 17v7M29 14l10-9M34 5h5v5"/></svg>`,
+        "answer-3b": `<svg viewBox="0 0 48 48"><path class="soft" d="M16 28c-3-3-5-7-5-11a13 13 0 0 1 26 0c0 4-2 8-5 11l-2 4H18z"/><path d="M16 28c-3-3-5-7-5-11a13 13 0 0 1 26 0c0 4-2 8-5 11l-2 4H18zM18 36h12M20 40h8M24 10c4 0 7 3 7 7M24 22v.1M24 14c3 0 4 2 4 4 0 3-4 3-4 6"/></svg>`,
+        "answer-4a": `<svg viewBox="0 0 48 48"><path class="soft" d="M6 10h27v18H18l-7 6v-6H6z"/><path d="M6 10h27v18H18l-7 6v-6H6zM13 17h13M13 22h9M28 30h14v10H32l-4 3zM33 34h5M37 8v6M40 11h-6"/></svg>`,
+        "answer-4b": `<svg viewBox="0 0 48 48"><path class="soft" d="M7 12h34v29H7z"/><path d="M7 12h34v29H7zM7 20h34M14 7v9M34 7v9M13 26h5M22 26h5M31 26h5M13 32h5M22 32h5M31 32h5M13 38h5M22 38h5"/><path d="M34 35l2 2 5-6"/></svg>`,
+        "answer-5a": `<svg viewBox="0 0 48 48"><path class="soft" d="M7 22L24 8l17 14v20H7z"/><path d="M7 22L24 8l17 14v20H7zM18 42V29h12v13M12 17V9h7v3M34 13h8v12M38 17v4M36 19h4"/></svg>`,
+        "answer-5b": `<svg viewBox="0 0 48 48"><path class="soft" d="M7 9h25v33H7z"/><path d="M7 9h25v33H7zM13 16h13M13 22h10M13 28h7M34 24h10v18H26V32M30 29h10M31 34h2M37 34h2M31 39h2M37 39h2M19 36c0-3 5-3 5-6 0-4-7-4-7 1M19 40h.1"/></svg>`
+      };
+
+      Object.entries(answerIllustrations).forEach(([templateId, artwork]) => {
+        const illustration = document.querySelector(`[data-template-id="${templateId}"] .answer-illustration`);
+        if (illustration) illustration.innerHTML = artwork;
+      });
+
       lucide.createIcons();
 
       const panels = Array.from(document.querySelectorAll(".question-panel"));
       const results = Array.from(document.querySelectorAll(".result-panel"));
       const dots = Array.from(document.querySelectorAll(".progress-dot"));
       const retryButton = document.getElementById("retry-button");
+      const lifeSupportButton = document.getElementById("life-support-button");
       const startButton = document.getElementById("start-button");
       const startPanel = document.querySelector(".start-panel");
       let currentQuestion = 0;
@@ -1282,6 +1406,7 @@ body{
         });
         results.forEach(result => result.classList.remove("active"));
         retryButton.classList.remove("visible", "theme-steady", "theme-balance", "theme-free");
+        lifeSupportButton.classList.remove("visible");
         updateProgress();
       }
 
@@ -1301,6 +1426,7 @@ body{
         });
         dots.forEach(dot => dot.classList.add("active"));
         retryButton.classList.add("visible", `theme-${resultName}`);
+        lifeSupportButton.classList.add("visible");
       }
 
       startButton.addEventListener("click", () => {
